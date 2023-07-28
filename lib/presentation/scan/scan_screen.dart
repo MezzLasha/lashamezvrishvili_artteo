@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lashamezvrishvili_artteo/custom/url_launcher.dart';
+import 'package:lashamezvrishvili_artteo/presentation/scan/scanned_custom.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -11,7 +12,6 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Barcode? result;
   QRViewController? controller;
 
   bool isFlashOn = false;
@@ -46,34 +46,30 @@ class _ScanScreenState extends State<ScanScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                  height: 50,
-                  margin: const EdgeInsets.only(bottom: 40),
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 2),
-                        blurRadius: 4,
-                      )
-                    ],
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, result!.code);
-                    },
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Looking for QR Code',
-                          style: TextStyle(),
-                        ),
-                      ],
+                height: 50,
+                margin: const EdgeInsets.only(bottom: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 2),
+                      blurRadius: 4,
+                    )
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Looking for QR Code',
+                      style: TextStyle(),
                     ),
-                  )),
+                  ],
+                ),
+              ),
               Container(
                   height: 50,
                   width: 50,
@@ -130,6 +126,15 @@ class _ScanScreenState extends State<ScanScreen> {
         await launchPhone(scanData.code!);
         return;
       }
+
+      controller.pauseCamera();
+
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ScannedDataScreen(
+          barcode: scanData,
+          controller: controller,
+        ),
+      ));
     });
   }
 
