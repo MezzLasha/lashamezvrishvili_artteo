@@ -1,6 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:lashamezvrishvili_artteo/presentation/home_screen.dart';
+import 'package:lashamezvrishvili_artteo/presentation/home/home_screen.dart';
 import 'package:lashamezvrishvili_artteo/presentation/scan_screen.dart';
 
 void main() {
