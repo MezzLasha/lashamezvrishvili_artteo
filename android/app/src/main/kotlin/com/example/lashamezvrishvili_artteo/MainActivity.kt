@@ -55,8 +55,8 @@ class MainActivity : FlutterActivity() {
             val watermarkBitmap = drawableToBitmap(watermarkDrawable)
 
             // calculate scaling factors
-            val scaleWidth = bitmap.width.toFloat() * 0.4f / watermarkBitmap.width.toFloat()
-            val scaleHeight = bitmap.height.toFloat() * 0.4f / watermarkBitmap.height.toFloat()
+            val scaleWidth = bitmap.width.toFloat() * 0.6f / watermarkBitmap.width.toFloat()
+            val scaleHeight = bitmap.height.toFloat() *0.6f / watermarkBitmap.height.toFloat()
 
             // use the smaller of the two scaling factors to maintain aspect ratio
             val scaleFactor = minOf(scaleWidth, scaleHeight)
@@ -70,8 +70,8 @@ class MainActivity : FlutterActivity() {
                 Bitmap.createScaledBitmap(watermarkBitmap, newWidth, newHeight, true)
 
             // calculate the position for the watermark
-            val watermarkLeft = (bitmap.width - resizedWatermarkBitmap.width) / 2f
-            val watermarkTop = (bitmap.height - resizedWatermarkBitmap.height) / 2f
+            val watermarkLeft = 0f
+            val watermarkTop = 0f
 
             // draw the resized watermark onto the original Bitmap
             val canvas = Canvas(bitmap)

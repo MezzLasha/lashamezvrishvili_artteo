@@ -1,10 +1,6 @@
-import 'dart:convert';
-
-import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:lashamezvrishvili_artteo/custom/image_utils.dart';
-import 'package:lashamezvrishvili_artteo/pigeon.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ExpandedImageScreen extends StatefulWidget {
@@ -60,11 +56,7 @@ class _ExpandedImageScreenState extends State<ExpandedImageScreen> {
                       final bytes = await addWatermarkToImageUrl(
                           widget.images[_pageController.page!.toInt()]);
 
-                      await FileSaver.instance.saveFile(
-                        name: "doggo",
-                        bytes: bytes,
-                        mimeType: MimeType.png,
-                      );
+                      await ImageGallerySaver.saveImage(bytes, quality: 100);
                     },
                     label: const Text('Save'),
                     icon: const Icon(Icons.download))
