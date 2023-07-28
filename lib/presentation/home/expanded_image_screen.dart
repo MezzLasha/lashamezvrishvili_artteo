@@ -57,6 +57,8 @@ class _ExpandedImageScreenState extends State<ExpandedImageScreen> {
                           widget.images[_pageController.page!.toInt()]);
 
                       await ImageGallerySaver.saveImage(bytes, quality: 100);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Image saved')));
                     },
                     label: const Text('Save'),
                     icon: const Icon(Icons.download))
