@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lashamezvrishvili_artteo/custom/url_launcher.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -16,34 +17,112 @@ class _ScanScreenState extends State<ScanScreen> {
   Barcode? result;
   QRViewController? controller;
 
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller!.resumeCamera();
-    }
-  }
+  bool isFlashOn = false;
+
+  // @override
+  // void reassemble() {
+  //   super.reassemble();
+  //   if (Platform.isAndroid) {
+  //     controller!.pauseCamera();
+  //   } else if (Platform.isIOS) {
+  //     controller!.resumeCamera();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: <Widget>[
-        Expanded(
-          flex: 5,
-          child: QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
+        QRView(
+          key: qrKey,
+          onQRViewCreated: _onQRViewCreated,
+        ),
+        Center(
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context)
+                    .colorScheme
+                    .tertiaryContainer
+                    .withOpacity(0.3),
+                width: 5,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: Center(
-            child: (result != null)
-                ? Text(
-                    'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                : const Text('Scan a code'),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, result!.code);
+                    },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Looking for QR Code',
+                          style: TextStyle(),
+                        ),
+                      ],
+                    ),
+                  )),
+              Container(
+                  height: 50,
+                  width: 50,
+                  margin: const EdgeInsets.only(bottom: 40, left: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      controller?.toggleFlash();
+
+                      setState(() {
+                        isFlashOn = !isFlashOn;
+                      });
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isFlashOn
+                              ? Icons.flash_on_outlined
+                              : Icons.flash_off_outlined,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ],
+                    ),
+                  )),
+            ],
           ),
         )
       ],
@@ -52,10 +131,18 @@ class _ScanScreenState extends State<ScanScreen> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+    controller.scannedDataStream.listen((scanData) async {
+      if (scanData.code == null) return;
+
+      if (scanData.code!.startsWith('http')) {
+        final success = await launchURL(context, scanData.code!);
+        return;
+      }
+
+      if (scanData.code!.startsWith('tel')) {
+        final success = await launchPhone(scanData.code!);
+        return;
+      }
     });
   }
 
