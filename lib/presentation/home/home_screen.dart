@@ -39,6 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return FutureBuilder(
       future: future,
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         if (snapshot.hasData) {
           return RefreshIndicator(
             onRefresh: () async {
@@ -59,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
+          return Center(child: Text('${snapshot.error}'));
         }
         return const Center(child: CircularProgressIndicator());
       },

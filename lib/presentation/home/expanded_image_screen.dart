@@ -57,8 +57,10 @@ class _ExpandedImageScreenState extends State<ExpandedImageScreen> {
                           widget.images[_pageController.page!.toInt()]);
 
                       await ImageGallerySaver.saveImage(bytes, quality: 100);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Image saved')));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Image saved'),
+                        behavior: SnackBarBehavior.floating,
+                      ));
                     },
                     label: const Text('Save'),
                     icon: const Icon(Icons.download))
@@ -71,6 +73,7 @@ class _ExpandedImageScreenState extends State<ExpandedImageScreen> {
           children: widget.images.map(
             (e) {
               return InteractiveViewer(
+                minScale: 0.5,
                 child: Center(
                   child: Hero(
                     tag: 'image${widget.images.indexOf(e)}',

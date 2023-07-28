@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:lashamezvrishvili_artteo/custom/url_launcher.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -16,16 +15,6 @@ class _ScanScreenState extends State<ScanScreen> {
   QRViewController? controller;
 
   bool isFlashOn = false;
-
-  // @override
-  // void reassemble() {
-  //   super.reassemble();
-  //   if (Platform.isAndroid) {
-  //     controller!.pauseCamera();
-  //   } else if (Platform.isIOS) {
-  //     controller!.resumeCamera();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +122,12 @@ class _ScanScreenState extends State<ScanScreen> {
       if (scanData.code == null) return;
 
       if (scanData.code!.startsWith('http')) {
-        final success = await launchURL(context, scanData.code!);
+        await launchURL(context, scanData.code!);
         return;
       }
 
       if (scanData.code!.startsWith('tel')) {
-        final success = await launchPhone(scanData.code!);
+        await launchPhone(scanData.code!);
         return;
       }
     });
