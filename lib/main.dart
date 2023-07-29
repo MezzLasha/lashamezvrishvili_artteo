@@ -1,8 +1,6 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lashamezvrishvili_artteo/presentation/home/home_screen.dart';
-import 'package:lashamezvrishvili_artteo/presentation/scan/scan_screen.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
