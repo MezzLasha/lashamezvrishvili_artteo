@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lashamezvrishvili_artteo/presentation/home/expanded_image_screen.dart';
+import 'package:lashamezvrishvili_artteo/presentation/scan/scan_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,39 +37,72 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if (snapshot.hasData) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              setState(() {
-                future = fetchImagesFromApi();
-              });
-            },
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return DoggoImageWidget(
-                  images: snapshot.data!,
-                  index: index,
-                );
-              },
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('${snapshot.error}'));
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
+    return Scaffold(
+        appBar: AppBar(title: const Text('Random Dog Photos')),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Expanded(
+                child: NavigationDrawer(
+                  selectedIndex: 0,
+                  onDestinationSelected: (value) {
+                    switch (value) {
+                      case 0:
+                        Navigator.pop(context);
+                        break;
+                      case 1:
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ScanScreen()));
+                        break;
+                      default:
+                    }
+                  },
+                  children: const [
+                    NavigationDrawerDestination(
+                        icon: Icon(Icons.home), label: Text('Home')),
+                    NavigationDrawerDestination(
+                        icon: Icon(Icons.qr_code), label: Text('Scan')),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.hasData) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  setState(() {
+                    future = fetchImagesFromApi();
+                  });
+                },
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return DoggoImageWidget(
+                      images: snapshot.data!,
+                      index: index,
+                    );
+                  },
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text('${snapshot.error}'));
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ));
   }
 }
 
